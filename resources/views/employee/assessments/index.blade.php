@@ -108,7 +108,7 @@
                         @endif
                                 
                         @elseif($assessment->status === 'pending_review')
-                        <a href="{{ route('employee.assessments.show', $assessment) }}" class="text-blue-400 hover:text-blue-500">Review</a>
+                        <!-- <a href="{{ route('employee.assessments.show', $assessment) }}" class="text-blue-400 hover:text-blue-500">Review</a> -->
                         @else
                         @if(!$assessment->getIsExpiredAttribute())
                         <!-- Start Assessment -->

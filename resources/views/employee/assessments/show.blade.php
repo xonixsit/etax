@@ -102,7 +102,7 @@
                     @else
 
                     <!-- {{$assessment->getIsExpiredAttribute()}} -->
-                            @if(!$assessment->getIsExpiredAttribute())
+                            @if(!$assessment->getIsExpiredAttribute() && $assessment->status === 'pending_review')
                             
                             <button type="button" 
                                     id="start-assessment-btn"

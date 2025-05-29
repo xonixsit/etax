@@ -32,6 +32,13 @@ class DashboardController extends Controller
         // Calculate pending assessments
         $pendingCount = $allAssessments->count() - $completedCount;
 
+        //calculate published assessments
+        $publishedCount = $allAssessments->where('is_published', true)->count();
+
+        // calculate expired assessments
+        $pendingCount = $allAssessments->where('is_published', true)->where('due_date', '>', now())->count();
+        
+
         // Calculate average score
         $completedResponses = $responses->where('status', AssessmentResponse::STATUS_COMPLETED);
         $averageScore = $completedResponses->isEmpty() 

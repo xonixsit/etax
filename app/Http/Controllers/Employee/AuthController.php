@@ -96,7 +96,7 @@ class AuthController extends Controller
             ->take(5);
 
         return view('employee.dashboard', [
-            'pendingCount' => $pendingCount,
+            'pendingCount' => 100,
             'completedCount' => $completedCount,
             'averageScore' => round($averageScore, 1),
             'recentAssessments' => $recentAssessments
