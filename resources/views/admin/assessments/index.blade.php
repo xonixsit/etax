@@ -96,7 +96,7 @@
                         <td class="px-4 py-3 whitespace-nowrap text-sm text-gray-300">
                             <!--add expired--if crossed due date is past from today-->
                             <span class="px-2.5 py-0.5 inline-flex text-md leading-5 font-semibold rounded-full {{ $assessment->getIsExpiredAttribute()? 'bg-red-100 text-red-800' : '' }}">
-                                {{ $assessment->getIsExpiredAttribute() ? 'Expired' : '$assessment->due_date' }}
+                                {{ $assessment->getIsExpiredAttribute() ? 'Expired' : $assessment->due_date }}
                             </span>
                         </td>
                         <td class="px-4 py-3 whitespace-nowrap text-sm text-gray-300 text-right space-x-3">
