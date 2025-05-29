@@ -29,7 +29,13 @@ class AuthController extends Controller
         $assignedAssessments = $user->assessments()->get();
         $assessments = Assessment::withCount('questions')
             ->orderBy('created_at', 'desc')
-            ->paginate(10);
+            ->paginate(10)->where('is_published', true)
+            ->get();
+        Log::info('Assigned assessments', [
+            'count' => $assessments->count(),
+            'assessments' => $assignedAssessments->toArray(),
+            $assessments
+        ]);
 
         $totalAssessments = Assessment::count();
 
