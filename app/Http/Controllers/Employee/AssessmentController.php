@@ -40,17 +40,16 @@ class AssessmentController extends Controller
         $user = Auth::user();
         //if assesment due date false         show message
         
-        // if ($assessment->getIsExpiredAttribute()) {
-        //     return redirect()->route('employee.assessments.index')
-        //         ->with('error', 'This assessment is no longer available.');
-        // }
-        
+        if ($assessment->getIsExpiredAttribute()) {
+            return redirect()->route('employee.assessments.index')
+                ->with('error', 'This assessment is no longer available.');
+        }
         // Get the latest response for this assessment
         $response = AssessmentResponse::where('user_id', $user->id)
             ->where('assessment_id', $assessment->id)
             ->latest()
             ->first();
-
+            Log::info('Assessment: '. $assessment);
             //get no of questions in it
             $questionCount = $assessment->questions->count();
             Log::info('Question Count: ' . $questionCount);

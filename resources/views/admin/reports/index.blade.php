@@ -101,9 +101,9 @@
             <tbody class="bg-gray-800/30 backdrop-blur-sm divide-y divide-gray-700">
                 @forelse($responses as $response)
                 <tr
-                    onclick="window.location.href='{{ route('admin.reports.show', ['response' => $response->id]) }}'"
+                    
                     class="cursor-pointer hover:bg-gray-700/50 transition-colors duration-200">
-                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-300">{{ $response->assessment->title }}</td>
+                    <td onclick="window.location.href='{{ route('admin.reports.show', ['response' => $response->id]) }}'" class="px-6 py-4 whitespace-nowrap text-sm text-gray-300">{{ $response->assessment->title }}</td>
                     <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-300">{{ $response->user->name }}</td>
                     <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-300">{{ $response->score }}%</td>
                     <td class="px-6 py-4 whitespace-nowrap text-sm">
@@ -124,11 +124,11 @@
                     <td class="text-center">
                         <form action="{{ route('admin.reports.complete', ['response' => $response->id, 'user' => $response->user->id]) }}" method="POST">
                             @csrf
-                            @method('PUT')
+                            @method('POST')
                             <!--only if it is not completed -->
                             <!--tool tip for button-->
-                            @if($response->status != 'completed')
-                            <button type="button" title="Mark as complete"  
+                            @if($response->status === 'pending_review')
+                            <button type="submit" title="Mark as complete"  
                                 class="inline-flex justify-center items-center gap-2 py-3 px-6 text-sm font-semibold rounded-lg text-white bg-green-600 cursor-default transition-all duration-300 w-full sm:w-auto">
                                 <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
@@ -137,9 +137,9 @@
                             </button>
                             @else
                             <div class='text-center inline-flex justify-center items-center'>    <svg class="w-5 h-5 text-blue-400 group-hover:text-blue-300 transition-colors" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-        d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path>
-</svg></div>
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                    d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path>
+                            </svg></div>
                             @endif
                         </form>
                     </td>

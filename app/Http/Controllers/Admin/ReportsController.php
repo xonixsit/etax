@@ -9,6 +9,7 @@ use App\Models\QuestionResponse;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Log;
 
 class ReportsController extends Controller
 {
@@ -186,9 +187,11 @@ class ReportsController extends Controller
     //write employee assessment completed status
     public function complete($assessmentResponseId)
     {
+    Log::info('Assessment completed: ' . $assessmentResponseId); // Log the inf
+
         $response = AssessmentResponse::findOrFail($assessmentResponseId);
         $response->update(['status' => 'completed']);
-
+        Log::info('Assessment completed: ' . $response->id); // Log the inf
         return back()->with('success', 'Assessment completed successfully.');
     }
 }

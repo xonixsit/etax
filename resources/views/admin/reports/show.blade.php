@@ -55,7 +55,11 @@
             <div class="bg-gray-700/50 rounded-lg p-4">
                 <p class="text-sm font-medium text-gray-400 mb-1">Completion Time</p>
                 <p class="text-2xl font-bold text-blue-400">
-                    {{ $response->completed_at->diffForHumans($response->started_at, true) }}
+                    @if($response->completed_at)
+                        {{ $response->completed_at->diffForHumans($response->started_at, true) }}
+                    @else
+                        Not completed
+                    @endif
                 </p>
             </div>
             <div class="bg-gray-700/50 rounded-lg p-4">
