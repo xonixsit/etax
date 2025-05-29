@@ -4,7 +4,7 @@ namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
 use App\Models\User;
-use Illuminate\Container\Attributes\Log;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
 use Spatie\Permission\Models\Role;
@@ -61,7 +61,7 @@ class EmployeeController extends Controller
 
             $user->assignRole($employeeRole);
 
-            Log:info('Employee created: ' . $user->name);
+            Log::info('Employee created: ' . $user->name);
 
             //add error log in case db creation level faild
 
