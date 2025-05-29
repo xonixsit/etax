@@ -52,7 +52,9 @@ class AuthController extends Controller
             ->get();
 
         // Calculate counts
-        $pendingCount = $assessments->count() +
+        //include only published assessments
+
+        $pendingCount = $assessments->where('is_published', true)->count() + 
             $responses->where('status', AssessmentResponse::STATUS_IN_PROGRESS)->count();
 
         $completedCount = $responses
