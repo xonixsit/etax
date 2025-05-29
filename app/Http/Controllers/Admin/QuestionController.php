@@ -86,7 +86,7 @@ class QuestionController extends Controller
             'text' => $request->text,
             'options' => in_array($request->type, ['multiple_choice', 'single_selection']) ? $request->options : null,
             'correct_answer' => $request->type === 'multiple_choice' ? 
-                json_encode($request->correct_answers) : 
+                implode(',', $request->correct_answers) : 
                 ($request->type === 'single_selection' ? $request->correct_answer : null),
             'word_limit' => $request->word_limit,
         ]);
