@@ -11,7 +11,12 @@
     <link href="https://fonts.bunny.net/css?family=instrument-sans:400,500,600,700&display=swap" rel="stylesheet" />
 
     <!-- Styles -->
+    @if (app()->environment('local'))
     @vite(['resources/css/app.css', 'resources/js/app.js'])
+    @else
+    <link rel="stylesheet" href="{{ Vite::asset('resources/css/app.css') }}">
+    <script src="{{ Vite::asset('resources/js/app.js') }}" defer></script>
+    @endif
     
     <!-- Alpine.js -->
     <script defer src="https://unpkg.com/alpinejs@3.x.x/dist/cdn.min.js"></script>
