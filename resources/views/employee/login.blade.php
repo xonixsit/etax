@@ -13,6 +13,7 @@
     @if (app()->environment('local'))
     @vite(['resources/css/app.css', 'resources/js/app.js'])
     @else
+     <!-- Styles -- production-->
     <link rel="stylesheet" href="{{ Vite::asset('resources/css/app.css') }}">
     <script type="module" src="{{ Vite::asset('resources/js/app.js') }}" defer></script>
     @endif    
