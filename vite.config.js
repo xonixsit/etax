@@ -4,17 +4,23 @@ import tailwindcss from '@tailwindcss/vite';
 
 export default defineConfig(
     {
-    base: process.env.ASSET_URL || '/',
-    server: {
-        headers: {
-            'Access-Control-Allow-Origin': '*',
+        server: {
+            host: '0.0.0.0',
+            IP : '74.208.47.107',
+            https: true,
+            hmr: {
+                host: 'etax.xonixs.com',
+            },
+            headers: {
+                'Access-Control-Allow-Origin': '*',
+            },
         },
-    },    
-    plugins: [
-        laravel({
-            input: ['resources/css/app.css', 'resources/js/app.js'],
-            refresh: true,
-        }),
-        tailwindcss(),
-    ],
+        base: process.env.ASSET_URL || '/',     
+        plugins: [
+            laravel({
+                input: ['resources/css/app.css', 'resources/js/app.js'],
+                refresh: true,
+            }),
+            tailwindcss(),
+        ],
 });
