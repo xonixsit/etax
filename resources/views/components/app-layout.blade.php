@@ -10,10 +10,9 @@
     <!-- Fonts -->
     <link rel="preconnect" href="https://fonts.bunny.net">
     <link href="https://fonts.bunny.net/css?family=figtree:400,500,600&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="{{ Vite::asset('resources/css/app.css') }}">
+    <script src="{{ Vite::asset('resources/js/app.js') }}" defer></script>
 
-    <!-- Scripts -->
-        <link rel="stylesheet" href="{{ mix('/css/app.css') }}">
-        <script src="{{ mix('/js/app.js') }}" defer></script>
 </head>
 <body class="font-sans antialiased">
     <div class="min-h-screen bg-gray-100 dark:bg-gray-900">
