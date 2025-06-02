@@ -4,6 +4,7 @@ import tailwindcss from '@tailwindcss/vite';
 
 export default defineConfig(
     {
+    base: process.env.ASSET_URL || '/',
     server: {
         headers: {
             'Access-Control-Allow-Origin': '*',
