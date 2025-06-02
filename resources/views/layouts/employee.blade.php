@@ -15,7 +15,7 @@
     @vite(['resources/css/app.css', 'resources/js/app.js'])
     @else
     <link rel="stylesheet" href="{{ Vite::asset('resources/css/app.css') }}">
-    <script src="{{ Vite::asset('resources/js/app.js') }}" defer></script>
+    <script type="module" src="{{ Vite::asset('resources/js/app.js') }}" defer></script>
     @endif
     
     <!-- Alpine.js -->
