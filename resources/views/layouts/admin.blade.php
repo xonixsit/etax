@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="{{ str_replace('_', '-', app()->getLocale()) }}">
+
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
@@ -19,6 +20,7 @@
     <script type="module" src="{{ Vite::asset('resources/js/app.js') }}" defer></script>
     @endif
 </head>
+
 <body class="font-sans antialiased bg-gradient-to-br from-gray-900 to-slate-900 min-h-screen text-gray-100">
     <!-- Navigation -->
     <nav class="fixed top-0 z-50 w-full bg-gray-800 bg-opacity-50 backdrop-filter backdrop-blur-lg border-b border-slate-700/50">
@@ -26,8 +28,12 @@
             <div class="flex items-center justify-between">
                 <div class="flex items-center justify-start">
                     <button id="toggleSidebarMobile" aria-expanded="true" aria-controls="sidebar" class="p-2 text-gray-400 rounded-lg lg:hidden hover:text-white hover:bg-gray-700 focus:outline-none focus:ring-2 focus:ring-gray-600">
-                        <svg id="toggleSidebarMobileHamburger" class="w-6 h-6" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg"><path fill-rule="evenodd" d="M3 5a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1zM3 10a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1zM3 15a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1z" clip-rule="evenodd"></path></svg>
-                        <svg id="toggleSidebarMobileClose" class="hidden w-6 h-6" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg"><path fill-rule="evenodd" d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z" clip-rule="evenodd"></path></svg>
+                        <svg id="toggleSidebarMobileHamburger" class="w-6 h-6" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg">
+                            <path fill-rule="evenodd" d="M3 5a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1zM3 10a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1zM3 15a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1z" clip-rule="evenodd"></path>
+                        </svg>
+                        <svg id="toggleSidebarMobileClose" class="hidden w-6 h-6" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg">
+                            <path fill-rule="evenodd" d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z" clip-rule="evenodd"></path>
+                        </svg>
                     </button>
                     <a href="{{ route('admin.dashboard') }}" class="flex ml-2 md:mr-24">
                         <span class="self-center text-xl font-semibold sm:text-2xl whitespace-nowrap">Admin Panel</span>
@@ -39,7 +45,9 @@
                             <button type="button" class="flex text-sm bg-gray-700 rounded-full focus:ring-4 focus:ring-gray-600" id="user-menu-button">
                                 <span class="sr-only">Open user menu</span>
                                 <div class="relative w-8 h-8 overflow-hidden bg-gray-600 rounded-full">
-                                    <svg class="absolute w-10 h-10 text-gray-400 -left-1" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg"><path fill-rule="evenodd" d="M10 9a3 3 0 100-6 3 3 0 000 6zm-7 9a7 7 0 1114 0H3z" clip-rule="evenodd"></path></svg>
+                                    <svg class="absolute w-10 h-10 text-gray-400 -left-1" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg">
+                                        <path fill-rule="evenodd" d="M10 9a3 3 0 100-6 3 3 0 000 6zm-7 9a7 7 0 1114 0H3z" clip-rule="evenodd"></path>
+                                    </svg>
                                 </div>
                             </button>
                         </div>
@@ -105,14 +113,14 @@
                         <span class="ml-3">Profile</span>
                     </a>
                 </li>
-               
+
                 <li>
                     <form method="POST" action="{{ route('admin.logout') }}">
                         @csrf
-                        <button type="submit" class="flex items-center p-2 text-base text-gray-300 rounded-lg hover:bg-slate-800/70 group transition-all duration-300"> 
+                        <button type="submit" class="flex items-center p-2 text-base text-gray-300 rounded-lg hover:bg-slate-800/70 group transition-all duration-300">
                             <svg class="w-6 h-6 text-gray-400 transition duration-75 group-hover:text-gray-100" fill="currentColor" viewBox="0 0 20 20" xmlns="
-                            <svg class="w-6 h-6 text-gray-400 transition duration-75 group-hover:text-gray-100" fill="currentColor" viewBox="0 0 20 20" xmlns="URL_ADDRESS.w3.org/2000/svg">        
-                            <path stroke-linecap="round" stroke-linejoin="round" d="M10 14l2-2m0 0l2-2m-2 2l-2-2m2 2l2 2m7-2a9 9 0 11-18 0 9 9 0 0118 0z" />
+                            <svg class=" w-6 h-6 text-gray-400 transition duration-75 group-hover:text-gray-100" fill="currentColor" viewBox="0 0 20 20" xmlns="URL_ADDRESS.w3.org/2000/svg">
+                                <path stroke-linecap="round" stroke-linejoin="round" d="M10 14l2-2m0 0l2-2m-2 2l-2-2m2 2l2 2m7-2a9 9 0 11-18 0 9 9 0 0118 0z" />
                             </svg>
                             <span class="ml-3">Logout</span>
                         </button>
@@ -137,7 +145,7 @@
                         <p class="text-sm font-medium text-red-400">Please fix the following errors:</p>
                         <ul class="mt-2 text-sm text-red-300 space-y-1 list-disc list-inside">
                             @foreach ($errors->all() as $error)
-                                <li>{{ $error }}</li>
+                            <li>{{ $error }}</li>
                             @endforeach
                         </ul>
                     </div>
@@ -186,7 +194,8 @@
             document.getElementById('toggleSidebarMobileClose').classList.toggle('hidden');
         });
     </script>
-        @stack('scripts')
+    @stack('scripts')
 
 </body>
+
 </html>
