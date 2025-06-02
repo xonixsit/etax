@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="{{ str_replace('_', '-', app()->getLocale()) }}">
+
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
@@ -17,10 +18,11 @@
     <link rel="stylesheet" href="{{ Vite::asset('resources/css/app.css') }}">
     <script type="module" src="{{ Vite::asset('resources/js/app.js') }}" defer></script>
     @endif
-    
+
     <!-- Alpine.js -->
     <script defer src="https://unpkg.com/alpinejs@3.x.x/dist/cdn.min.js"></script>
 </head>
+
 <body class="font-sans antialiased bg-gradient-to-br from-slate-900 to-slate-800 text-gray-200">
     <div class="min-h-screen flex">
         <!-- Sidebar -->
@@ -61,34 +63,34 @@
                         </a>
                     </li>
                     <li>
-                        <a href="{{ route('employee.profile') }}" class="flex items-center p-2 text-base text-gray-300 rounded-lg hover:bg-slate-800/70 group transition-all duration-300">     
+                        <a href="{{ route('employee.profile') }}" class="flex items-center p-2 text-base text-gray-300 rounded-lg hover:bg-slate-800/70 group transition-all duration-300">
                             <svg class="w-6 h-6 text-gray-400 transition duration-75 group-hover:text-gray-100" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="URL_ADDRESS.w3.org/2000/svg">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
                             </svg>
                             <span class="ml-3">Profile</span>
                         </a>
                     </li>
-                            
-                            
+
+
                     <!-- Add more sidebar items as needed -->
 
                 </ul>
 
                 <div class="pt-4 mt-4 space-y-2 border-t border-slate-700/50">
-                </ul>
+                    </ul>
 
-                <div class="pt-4 mt-4 space-y-2 border-t border-slate-700/50">
-                    <form method="POST" action="{{ route('employee.logout') }}">
-                        @csrf
-                        <button type="submit" class="flex w-full items-center p-2 text-base text-gray-300 rounded-lg hover:bg-slate-800/70 group transition-all duration-300">
-                            <svg class="w-6 h-6 text-gray-400 transition duration-75 group-hover:text-gray-100" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1" />
-                            </svg>
-                            <span class="ml-3">Sign out</span>
-                        </button>
-                    </form>
+                    <div class="pt-4 mt-4 space-y-2 border-t border-slate-700/50">
+                        <form method="POST" action="{{ route('employee.logout') }}">
+                            @csrf
+                            <button type="submit" class="flex w-full items-center p-2 text-base text-gray-300 rounded-lg hover:bg-slate-800/70 group transition-all duration-300">
+                                <svg class="w-6 h-6 text-gray-400 transition duration-75 group-hover:text-gray-100" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1" />
+                                </svg>
+                                <span class="ml-3">Sign out</span>
+                            </button>
+                        </form>
+                    </div>
                 </div>
-            </div>
         </aside>
 
         <!-- Main Content -->
@@ -119,20 +121,20 @@
             <!-- Page Content -->
             <div class="pt-16">
                 @if (session('success'))
-                    <div class="max-w-7xl mx-auto px-4 mb-4">
-                        <div class="p-4 bg-green-500/10 border border-green-500/20 rounded-lg">
-                            <div class="flex">
-                                <div class="flex-shrink-0">
-                                    <svg class="h-5 w-5 text-green-400" viewBox="0 0 20 20" fill="currentColor">
-                                        <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"/>
-                                    </svg>
-                                </div>
-                                <div class="ml-3">
-                                    <p class="text-sm font-medium text-green-400">{{ session('success') }}</p>
-                                </div>
+                <div class="max-w-7xl mx-auto px-4 mb-4">
+                    <div class="p-4 bg-green-500/10 border border-green-500/20 rounded-lg">
+                        <div class="flex">
+                            <div class="flex-shrink-0">
+                                <svg class="h-5 w-5 text-green-400" viewBox="0 0 20 20" fill="currentColor">
+                                    <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd" />
+                                </svg>
+                            </div>
+                            <div class="ml-3">
+                                <p class="text-sm font-medium text-green-400">{{ session('success') }}</p>
                             </div>
                         </div>
                     </div>
+                </div>
                 @endif
                 @yield('content')
             </div>
@@ -140,4 +142,5 @@
         @stack('scripts')
     </div>
 </body>
+
 </html>
