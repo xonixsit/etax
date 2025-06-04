@@ -62,16 +62,102 @@
             @else
             <div class="overflow-x-auto">
                 <table class="min-w-full divide-y divide-slate-700/50">
-                    <thead>
-                        <tr class="bg-slate-900/30">
-                            <th scope="col" class="px-4 py-3 text-left text-xs font-medium text-gray-400 uppercase tracking-wider">Name</th>
-                            <th scope="col" class="px-4 py-3 text-left text-xs font-medium text-gray-400 uppercase tracking-wider">Email</th>
-                            <th scope="col" class="px-4 py-3 text-left text-xs font-medium text-gray-400 uppercase tracking-wider">Department</th>
-                            <th scope="col" class="px-4 py-3 text-left text-xs font-medium text-gray-400 uppercase tracking-wider">Position</th>
-                            <th scope="col" class="px-4 py-3 text-left text-xs font-medium text-gray-400 uppercase tracking-wider">Status</th>
-                            <th scope="col" class="px-4 py-3 text-right text-xs font-medium text-gray-400 uppercase tracking-wider">Actions</th>
-                        </tr>
-                    </thead>
+                <thead>
+    <tr class="bg-slate-900/30">
+        <!-- Name Column (sortable) -->
+        <th scope="col" class="px-4 py-3 text-left text-xs font-medium text-gray-400 uppercase tracking-wider">
+            <a aria-label="Sort by Name" href="{{ route('admin.employees.index', ['sort' => 'name', 'direction' => $direction === 'asc' ? 'desc' : 'asc']) }}"
+               class="flex items-center gap-1">
+                Name
+                @if ($sort === 'name')
+                    <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                              d="M7 16l-4-4m0 0l4-4m-4 4h18" />
+                        @if ($direction === 'asc')
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                  d="M12 15v-3m0 3v3" />
+                        @endif
+                    </svg>
+                @endif
+            </a>
+        </th>
+
+        <!-- Email Column (sortable) -->
+        <th scope="col" class="px-4 py-3 text-left text-xs font-medium text-gray-400 uppercase tracking-wider">
+            <a href="{{ route('admin.employees.index', ['sort' => 'email', 'direction' => $direction === 'asc' ? 'desc' : 'asc']) }}"
+               class="flex items-center gap-1">
+                Email
+                @if ($sort === 'email')
+                    <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                              d="M7 16l-4-4m0 0l4-4m-4 4h18" />
+                        @if ($direction === 'asc')
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                  d="M12 15v-3m0 3v3" />
+                        @endif
+                    </svg>
+                @endif
+            </a>
+        </th>
+
+        <!-- Department Column (sortable) -->
+        <th scope="col" class="px-4 py-3 text-left text-xs font-medium text-gray-400 uppercase tracking-wider">
+            <a href="{{ route('admin.employees.index', ['sort' => 'department', 'direction' => $direction === 'asc' ? 'desc' : 'asc']) }}"
+               class="flex items-center gap-1">
+                Department
+                @if ($sort === 'department')
+                    <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                              d="M7 16l-4-4m0 0l4-4m-4 4h18" />
+                        @if ($direction === 'asc')
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                  d="M12 15v-3m0 3v3" />
+                        @endif
+                    </svg>
+                @endif
+            </a>
+        </th>
+
+        <!-- Position Column (sortable) -->
+        <th scope="col" class="px-4 py-3 text-left text-xs font-medium text-gray-400 uppercase tracking-wider">
+            <a href="{{ route('admin.employees.index', ['sort' => 'position', 'direction' => $direction === 'asc' ? 'desc' : 'asc']) }}"
+               class="flex items-center gap-1">
+                Position
+                @if ($sort === 'position')
+                    <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                              d="M7 16l-4-4m0 0l4-4m-4 4h18" />
+                        @if ($direction === 'asc')
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                  d="M12 15v-3m0 3v3" />
+                        @endif
+                    </svg>
+                @endif
+            </a>
+        </th>
+
+        <!-- Status Column (sortable) -->
+        <th scope="col" class="px-4 py-3 text-left text-xs font-medium text-gray-400 uppercase tracking-wider">
+            <a href="{{ route('admin.employees.index', ['sort' => 'status', 'direction' => $direction === 'asc' ? 'desc' : 'asc']) }}"
+               class="flex items-center gap-1">
+                Status
+                @if ($sort === 'status')
+                    <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                              d="M7 16l-4-4m0 0l4-4m-4 4h18" />
+                        @if ($direction === 'asc')
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                  d="M12 15v-3m0 3v3" />
+                        @endif
+                    </svg>
+                @endif
+            </a>
+        </th>
+
+        <!-- Actions Column (non-sortable) -->
+        <th scope="col" class="flex items-center gap-1 {{ $sort === 'name' ? 'font-semibold' : '' }} px-4 py-3 text-right text-xs font-medium text-gray-400 uppercase tracking-wider">Actions</th>
+    </tr>
+</thead>
                     <tbody class="divide-y divide-slate-700/50">
                         @foreach ($employees as $employee)
                         <tr class="hover:bg-slate-700/10 transition-colors duration-200">
@@ -87,39 +173,38 @@
                                 @endif
                             </td>
                             <td class="px-6 py-4 whitespace-nowrap text-right text-sm font-medium flex items-center justify-end gap-3">
-    <!-- Edit Button -->
-    <a href="{{ route('admin.employees.edit', $employee) }}"
-       class="text-indigo-400 hover:text-indigo-300 transition-colors duration-200 group"
-       title="Edit Employee">
-        <svg class="w-5 h-5 text-blue-400 group-hover:text-blue-300 transition-colors" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"></path>
-        </svg>
-    </a>
+                                <!-- Edit Button -->
+                                <a href="{{ route('admin.employees.edit', $employee) }}"
+                                    class="text-indigo-400 hover:text-indigo-300 transition-colors duration-200 group"
+                                    title="Edit Employee">
+                                    <svg class="w-5 h-5 text-blue-400 group-hover:text-blue-300 transition-colors" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                            d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"></path>
+                                    </svg>
+                                </a>
 
-    <!-- Delete Button -->
-    <form action="{{ route('admin.employees.destroy', $employee) }}" method="POST" class="inline"
-          onsubmit="return confirm('Are you sure you want to delete this employee?');">
-        @csrf
-        @method('DELETE')
-        <button type="submit"
-                class="text-red-400 hover:text-red-300 transition-colors duration-200 group"
-                title="Delete Employee">
-            <svg class="w-5 h-5 text-red-400 group-hover:text-red-300 transition-colors" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                    d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M10 14h4"></path>
-            </svg>
-        </button>
-    </form>
-</td>
+                                <!-- Delete Button -->
+                                <form action="{{ route('admin.employees.destroy', $employee) }}" method="POST" class="inline"
+                                    onsubmit="return confirm('Are you sure you want to delete this employee?');">
+                                    @csrf
+                                    @method('DELETE')
+                                    <button type="submit"
+                                        class="text-red-400 hover:text-red-300 transition-colors duration-200 group"
+                                        title="Delete Employee">
+                                        <svg class="w-5 h-5 text-red-400 group-hover:text-red-300 transition-colors" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                                d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M10 14h4"></path>
+                                        </svg>
+                                    </button>
+                                </form>
+                            </td>
                         </tr>
                         @endforeach
                     </tbody>
                 </table>
             </div>
             <div class="px-5 py-3.5 border-t border-slate-700/50">
-                {{ $employees->links() }}
-            </div>
+            {{ $employees->appends(['sort' => $sort, 'direction' => $direction])->links() }}            </div>
             @endif
         </div>
 </main>

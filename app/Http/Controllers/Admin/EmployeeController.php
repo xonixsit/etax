@@ -11,22 +11,34 @@ use Spatie\Permission\Models\Role;
 
 class EmployeeController extends Controller
 {
-    public function index(Request $request)
-    {
-        $query = User::role('employee');
-        
-        if ($search = $request->input('search')) {
-            $query->where(function($q) use ($search) {
-                $q->where('name', 'like', "%{$search}%")
-                  ->orWhere('email', 'like', "%{$search}%")
-                  ->orWhere('department', 'like', "%{$search}%")
-                  ->orWhere('position', 'like', "%{$search}%");
-            });
-        }
-        
-        $employees = $query->paginate(10)->withQueryString();
-        return view('admin.employees.index', compact('employees'));
+
+        public function index(Request $request)
+{
+    $query = User::role('employee');
+
+    if ($search = $request->input('search')) {
+        $query->where(function ($q) use ($search) {
+            $q->where('name', 'like', "%{$search}%")
+              ->orWhere('email', 'like', "%{$search}%")
+              ->orWhere('department', 'like', "%{$search}%")
+              ->orWhere('position', 'like', "%{$search}%");
+        });
     }
+
+    $allowedSortColumns = ['name', 'email', 'department', 'position', 'status'];
+    $sort = in_array($request->query('sort'), $allowedSortColumns) 
+        ? $request->query('sort') 
+        : 'name';
+    $direction = $request->query('direction', 'asc');
+
+    // Apply sorting to the existing query
+    $employees = $query
+        ->orderBy($sort, $direction)
+        ->paginate(15)
+        ->withQueryString(); // Retain query parameters in pagination links
+
+    return view('admin.employees.index', compact('employees', 'sort', 'direction'));
+}
 
     public function create()
     {

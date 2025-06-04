@@ -11,14 +11,8 @@
     <!-- Fonts -->
     <link rel="preconnect" href="https://fonts.bunny.net">
     <link href="https://fonts.bunny.net/css?family=figtree:400,500,600&display=swap" rel="stylesheet" />
-
-    <!-- Scripts -->
-    @if (app()->environment('local'))
-    @vite(['resources/css/app.css', 'resources/js/app.js'])
-    @else
-    <link rel="stylesheet" href="{{ Vite::asset('resources/css/app.css') }}">
-    <script type="module" src="{{ Vite::asset('resources/js/app.js') }}" defer></script>
-    @endif
+    <link rel="stylesheet" href="{{ mix('css/app.css') }}">
+    <script src="{{ mix('js/app.js') }}"></script>
 </head>
 
 <body class="font-sans antialiased bg-gradient-to-br from-gray-900 to-slate-900 min-h-screen text-gray-100">
@@ -111,6 +105,15 @@
                             <path fill-rule="evenodd" d="M10 9a3 3 0 100-6 3 3 0 000 6zm-7 9a7 7 0 1114 0H3z" clip-rule="evenodd"></path>
                         </svg>
                         <span class="ml-3">Profile</span>
+                    </a>
+                </li>
+
+                <li>
+                    <a href="{{ route('admin.feedback.index') }}" class="flex items-center p-2 text-base text-gray-300 rounded-lg hover:bg-slate-800/70 group transition-all duration-300">
+                        <svg class="w-6 h-6 text-gray-400 transition duration-75 group-hover:text-gray-100" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg">
+                            <path fill-rule="evenodd" d="M10 9a3 3 0 100-6 3 3 0 000 6zm-7 9a7 7 0 1114 0H3z" clip-rule="evenodd"></path>
+                        </svg>
+                        <span class="ml-3">Feedbacks</span>
                     </a>
                 </li>
 

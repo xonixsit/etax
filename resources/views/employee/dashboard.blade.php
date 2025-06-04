@@ -20,8 +20,12 @@
                     </svg>
                 </div>
                 <div>
-                    <h3 class="text-lg font-medium text-gray-200">Pending Assessments</h3>
-                    <p class="text-2xl font-semibold text-gray-100">{{ $pendingCount }}</p>
+                    <div>
+                        <a href="{{ route('employee.assessments.index') }}" class="text-lg font-medium text-gray-200">
+                            <h3>Pending Assessments</h3>
+                            <p class="text-2xl font-semibold text-gray-100">{{ $pendingCount }}</p>
+                        </a>
+                    </div>
                 </div>
             </div>
         </div>

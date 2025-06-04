@@ -6,7 +6,9 @@ use App\Http\Controllers\Admin\AssessmentController;
 use App\Http\Controllers\Admin\QuestionController;
 use App\Http\Controllers\Admin\EmployeeController;
 use App\Http\Controllers\Admin\ProfileController;
+use App\Http\Controllers\Admin\ReportsController;
 use App\Http\Controllers\Employee\AuthController as EmployeeAuthController;
+use App\Http\Controllers\Employee\FeedbackController;
 
  // Admin Guest Routes
 Route::prefix('admin')->name('admin.')->middleware('guest')->group(function () {
@@ -32,7 +34,7 @@ Route::prefix('admin')->name('admin.')->middleware('auth')->group(function () {
 
     // Reports
     Route::get('reports', [\App\Http\Controllers\Admin\ReportsController::class, 'index'])->name('reports.index');
-    Route::get('reports/export', [\App\Http\Controllers\Admin\ReportsController::class, 'export'])->name('reports.export');
+    Route::post('reports/export', [\App\Http\Controllers\Admin\ReportsController::class, 'export'])->name('reports.export');
     Route::get('reports/statistics', [\App\Http\Controllers\Admin\ReportsController::class, 'statistics'])->name('reports.statistics');
     Route::get('reports/analytics', [\App\Http\Controllers\Admin\ReportsController::class, 'statistics'])->name('reports.analytics');
     Route::get('reports/{response}', [\App\Http\Controllers\Admin\ReportsController::class, 'show'])->name('reports.show');
@@ -46,8 +48,15 @@ Route::prefix('admin')->name('admin.')->middleware('auth')->group(function () {
     Route::match(['put', 'get'], 'assessments/{assessment}/questions/{question}', [QuestionController::class, 'update'])->name('assessments.questions.update');
     Route::delete('assessments/{assessment}/questions/{question}', [QuestionController::class, 'destroy'])->name('assessments.questions.destroy');
     Route::post('assessments/{assessment}/questions', [QuestionController::class, 'store'])->name('assessments.questions.store');
-});
 
+    //admin.feedback
+    Route::resource('feedback', \App\Http\Controllers\Admin\FeedbackController::class);
+    Route::get('/feedback', [\App\Http\Controllers\Admin\FeedbackController::class, 'index'])->name('feedback.index');
+    Route::get('/feedback/{feedback}', [\App\Http\Controllers\Admin\FeedbackController::class, 'show'])->name('feedback.show');
+
+    // routes/web.php
+    // Route::post('/export-reports', [ReportsController::class, 'export'])->name('admin.export-reports');
+});
 
 // Employee Guest Routes
 Route::middleware('guest:employee')->group(function () {
@@ -65,7 +74,6 @@ Route::middleware('auth:employee')->prefix('employee')->name('employee.')->group
     Route::put('/profile/{employee}', [\App\Http\Controllers\Employee\AuthController::class, 'update'])->name('profile.update');
     
     Route::get('/assessments', [\App\Http\Controllers\Employee\AssessmentController::class, 'index'])->name('assessments.index');
-    
     Route::get('/assessments/{assessment}', [\App\Http\Controllers\Employee\AssessmentController::class, 'show'])->name('assessments.show');
     Route::get('/assessments/{assessment}/take', [\App\Http\Controllers\Employee\AssessmentController::class, 'take'])->name('assessments.take');
     Route::get('/assessments/{assessment}/question/{response}', [\App\Http\Controllers\Employee\AssessmentController::class, 'question'])->name('assessments.question');
@@ -73,4 +81,12 @@ Route::middleware('auth:employee')->prefix('employee')->name('employee.')->group
     Route::get('/assessment-confirmation', [\App\Http\Controllers\Employee\AssessmentController::class, 'showConfirmation'])->name('assessment.confirmation');
     Route::get('/assessments/{assessment}/results', [\App\Http\Controllers\Employee\AssessmentController::class, 'results'])->name('assessments.results');
     Route::get('/results', [\App\Http\Controllers\Employee\AssessmentController::class, 'allResults'])->name('results');
+
+    Route::resource('feedback', FeedbackController::class);
+
+    Route::get('/feedback', [FeedbackController::class, 'index'])->name('feedback.index');
+
+    // Route for saving feedback (POST)
+    Route::post('/feedback', [FeedbackController::class, 'store'])->name('feedback.store');
+ 
 });

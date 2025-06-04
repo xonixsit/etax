@@ -1,24 +1,16 @@
 <!DOCTYPE html>
 <html lang="{{ str_replace('_', '-', app()->getLocale()) }}">
-
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta name="csrf-token" content="{{ csrf_token() }}">
     <title>@yield('title') - Employee Assessment Platform</title>
-
     <!-- Fonts -->
     <link rel="preconnect" href="https://fonts.bunny.net">
     <link href="https://fonts.bunny.net/css?family=instrument-sans:400,500,600,700&display=swap" rel="stylesheet" />
-
     <!-- Styles -->
-    @if (app()->environment('local'))
-    @vite(['resources/css/app.css', 'resources/js/app.js'])
-    @else
-    <link rel="stylesheet" href="{{ Vite::asset('resources/css/app.css') }}">
-    <script type="module" src="{{ Vite::asset('resources/js/app.js') }}" defer></script>
-    @endif
-
+    <link rel="stylesheet" href="{{ mix('css/app.css') }}">
+    <script src="{{ mix('js/app.js') }}"></script>
     <!-- Alpine.js -->
     <script defer src="https://unpkg.com/alpinejs@3.x.x/dist/cdn.min.js"></script>
 </head>
@@ -38,7 +30,7 @@
                 <ul class="space-y-2">
                     <li>
                         <a href="{{ route('employee.dashboard') }}" class="flex items-center p-2 text-base text-gray-300 rounded-lg hover:bg-slate-800/70 group transition-all duration-300">
-                            <svg class="w-6 h-6 text-gray-400 transition duration-75 group-hover:text-gray-100" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg">
+                            <svg class="w-6 h-6 text-gray-400 transition duration-75 group-hover:text-gray-100" fill="currentColor" stroke="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg">
                                 <path d="M2 10a8 8 0 018-8v8h8a8 8 0 11-16 0z"></path>
                                 <path d="M12 2.252A8.014 8.014 0 0117.748 8H12V2.252z"></path>
                             </svg>
@@ -71,7 +63,16 @@
                         </a>
                     </li>
 
+                    <li>
+                        <a href="{{ route('employee.feedback.index') }}" class="flex items-center p-2 text-base text-gray-300 rounded-lg hover:bg-slate-800/70 group transition-all duration-300">
+                           <!-- Feedback/Chat Icon -->
+                                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" class="w-6 h-6 text-blue-600">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                    d="M7 8h10M7 12h6m-6 4h10M5 21l2-4H5a2 2 0 01-2-2V5a2 2 0 012-2h14a2 2 0 012 2v10a2 2 0 01-2 2H7l-2 4z" />
+                                </svg>
 
+                            <span class="ml-3">Feedback</span>
+                        </a>
                     <!-- Add more sidebar items as needed -->
 
                 </ul>

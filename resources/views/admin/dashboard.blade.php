@@ -18,8 +18,10 @@
                 </svg>
             </div>
             <div class="flex-1 ml-4">
-                <p class="text-sm font-medium text-gray-300 truncate">Total Assessments</p>
-                <p class="mt-1 text-xl font-semibold text-gray-100">{{ $totalAssessments ?? 0 }}</p>
+                <a href="{{ route('admin.assessments.index') }}" class="items-center p-2 text-base text-gray-300 rounded-lg  group transition-all duration-300">
+                    <p class="text-sm font-medium text-gray-300 truncate">Total Assessments</p>
+                    <p class="mt-1 text-xl font-semibold text-gray-100">{{ $totalAssessments ?? 0 }}</p>
+                </a>
             </div>
         </div>
     </div>
@@ -33,8 +35,10 @@
                 </svg>
             </div>
             <div class="flex-1 ml-4">
-                <p class="text-sm font-medium text-gray-300 truncate">Active Employees</p>
-                <p class="mt-1 text-xl font-semibold text-gray-100">{{ $activeEmployees ?? 0 }}</p>
+                <a href="{{ route('admin.employees.index') }}" class="items-center p-2 text-base text-gray-300 rounded-lg group transition-all duration-300">
+                    <p class="text-sm font-medium text-gray-300 truncate">Active Employees</p>
+                    <p class="mt-1 text-xl font-semibold text-gray-100">{{ $activeEmployees ?? 0 }}</p>
+                </a>
             </div>
         </div>
     </div>
@@ -48,8 +52,10 @@
                 </svg>
             </div>
             <div class="flex-1 ml-4">
+            <a href="{{ route('admin.reports.index') }}" class="items-center p-2 text-base text-gray-300 rounded-lg group transition-all duration-300">
                 <p class="text-sm font-medium text-gray-300 truncate">Pending Reviews</p>
                 <p class="mt-1 text-xl font-semibold text-gray-100">{{ $pendingReviews ?? 0 }}</p>
+            </a>
             </div>
         </div>
     </div>
@@ -74,46 +80,44 @@
 <div class="grid grid-cols-1 gap-6 mb-6 lg:grid-cols-2">
     <!-- Recent Activity -->
     <div class="p-4 bg-slate-800/60 backdrop-blur-md rounded-xl shadow-2xl hover:shadow-xl transition-all duration-300 border border-slate-700/50">
-    <h2 class="text-lg font-medium text-gray-100 mb-4 flex items-center space-x-2">
-  <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-gray-300" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
-    <path stroke-linecap="round" stroke-linejoin="round" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
-  </svg>
-  <span>Recent Activity</span>
-</h2>
+        <h2 class="text-lg font-medium text-gray-100 mb-4 flex items-center space-x-2">
+            <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-gray-300" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
+            </svg>
+            <span>Recent Activity</span>
+        </h2>
         <div class="flow-root">
-        <div class="p-4 bg-slate-800/60 backdrop-blur-md rounded-xl shadow-2xl hover:shadow-xl transition-all duration-300 hover:scale-[1.02] cursor-pointer border border-slate-700/50 group max-w-xl mx-auto">
-    <ul>
-        @forelse ($recentActivities as $activity)
-            <li class="mb-3">
-                <div class="p-3 bg-slate-900 rounded-lg border border-slate-700 group-hover:border-slate-500 transition-colors duration-300">
-                    <div class="text-slate-200 font-semibold">
-                        {{ $activity->user->name }}
-                        <span class="text-slate-400 italic">submitted</span>
-                        <span class="text-sky-400">“{{ $activity->assessment->title }}”</span>
-                    </div>
-                    <div class="text-slate-400 text-sm mt-1">
-                        {{ $activity->created_at->format('M d, Y • h:i A') }}
-                    </div>
-                </div>
-            </li>
-        @empty
-            <li class="text-slate-400 italic">No recent activities.</li>
-        @endforelse
-    </ul>
-</div>
-
-
+            <div class="p-4 bg-slate-800/60 backdrop-blur-md rounded-xl shadow-2xl hover:shadow-xl transition-all duration-300 hover:scale-[1.02] cursor-pointer border border-slate-700/50 group max-w-xl mx-auto">
+                <ul>
+                    @forelse ($recentActivities as $activity)
+                    <li class="mb-3">
+                        <div class="p-3 bg-slate-900 rounded-lg border border-slate-700 group-hover:border-slate-500 transition-colors duration-300">
+                            <div class="text-slate-200 font-semibold">
+                                {{ $activity->user->name }}
+                                <span class="text-slate-400 italic">submitted</span>
+                                <span class="text-sky-400">“{{ $activity->assessment->title }}”</span>
+                            </div>
+                            <div class="text-slate-400 text-sm mt-1">
+                                {{ $activity->created_at->format('M d, Y • h:i A') }}
+                            </div>
+                        </div>
+                    </li>
+                    @empty
+                    <li class="text-slate-400 italic">No recent activities.</li>
+                    @endforelse
+                </ul>
+            </div>
         </div>
     </div>
 
     <!-- Quick Actions -->
     <div class="p-4 bg-slate-800/60 backdrop-blur-md rounded-xl shadow-2xl hover:shadow-xl transition-all duration-300 border border-slate-700/50">
-    <h2 class="text-lg font-medium text-gray-100 mb-4 flex items-center space-x-2">
-  <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-yellow-400" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
-    <path stroke-linecap="round" stroke-linejoin="round" d="M13 10V3L4 14h7v7l9-11h-7z" />
-  </svg>
-  <span>Quick Actions</span>
-</h2>
+        <h2 class="text-lg font-medium text-gray-100 mb-4 flex items-center space-x-2">
+            <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-yellow-400" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M13 10V3L4 14h7v7l9-11h-7z" />
+            </svg>
+            <span>Quick Actions</span>
+        </h2>
         <div class="grid grid-cols-2 gap-4">
             <a href="{{ route('admin.assessments.create') }}" class="inline-flex items-center justify-center px-4 py-2 border border-transparent rounded-lg shadow-md text-sm font-medium text-white bg-indigo-600 hover:bg-indigo-500 transition-all duration-300 hover:shadow-lg hover:scale-[1.02] hover:ring-2 hover:ring-indigo-500/50 focus:outline-none focus:ring-2 focus:ring-indigo-500">
                 <svg class="-ml-1 mr-2 h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
@@ -121,7 +125,7 @@
                 </svg>
                 New Assessment
             </a>
-            <a href="{{ route('admin.employees.create') }}"  class="inline-flex items-center justify-center px-4 py-2 border border-transparent rounded-lg shadow-md text-sm font-medium text-white bg-green-600 hover:bg-green-500 transition-all duration-300 hover:shadow-lg hover:scale-[1.02] hover:ring-2 hover:ring-green-500/50 focus:outline-none focus:ring-2 focus:ring-green-500">
+            <a href="{{ route('admin.employees.create') }}" class="inline-flex items-center justify-center px-4 py-2 border border-transparent rounded-lg shadow-md text-sm font-medium text-white bg-green-600 hover:bg-green-500 transition-all duration-300 hover:shadow-lg hover:scale-[1.02] hover:ring-2 hover:ring-green-500/50 focus:outline-none focus:ring-2 focus:ring-green-500">
                 <svg class="-ml-1 mr-2 h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M18 9v3m0 0v3m0-3h3m-3 0h-3m-2-5a4 4 0 11-8 0 4 4 0 018 0zM3 20a6 6 0 0112 0v1H3v-1z"></path>
                 </svg>

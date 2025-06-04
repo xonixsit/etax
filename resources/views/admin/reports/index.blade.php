@@ -24,7 +24,7 @@
     </div>
     <!-- Filters -->
     <div class="bg-gray-800/50 backdrop-blur-sm rounded-xl shadow-lg border border-gray-700/50 p-8 mb-8 transition-all duration-300 hover:bg-gray-800/60">
-        <form action="{{ route('admin.reports.index') }}" method="GET" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+        <form id='export-reports' action="{{ route('admin.reports.index') }}" method="GET" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
             <div>
                 <label for="start_date" class="block text-sm font-semibold text-gray-200 mb-2">Start Date</label>
                 <input type="date" name="start_date" id="start_date" value="{{ request('start_date') }}"
@@ -75,12 +75,13 @@
                     Apply Filters
                 </button>
 
-                <button type="button" onclick="exportReports()" class="inline-flex justify-center items-center gap-2 py-3 px-6 text-sm font-semibold rounded-lg text-white bg-green-600 hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-green-500 transition-all duration-300 w-full sm:w-auto">
+                <button type="button" id="export-btn" onClick="exportReports()" class="inline-flex justify-center items-center gap-2 py-3 px-6 text-sm font-semibold rounded-lg text-white bg-green-600 hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-green-500 transition-all duration-300 w-full sm:w-auto">
                     <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"></path>
                     </svg>
                     Export Reports
                 </button>
+                
             </div>
         </form>
     </div>
@@ -100,8 +101,7 @@
             </thead>
             <tbody class="bg-gray-800/30 backdrop-blur-sm divide-y divide-gray-700">
                 @forelse($responses as $response)
-                <tr
-                    
+                <tr                    
                     class="cursor-pointer hover:bg-gray-700/50 transition-colors duration-200">
                     <td onclick="window.location.href='{{ route('admin.reports.show', ['response' => $response->id]) }}'" class="px-6 py-4 whitespace-nowrap text-sm text-gray-300">{{ $response->assessment->title }}</td>
                     <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-300">{{ $response->user->name }}</td>
@@ -156,5 +156,36 @@
             {{ $responses->links() }}
         </div>
     </div>
-
+                         
     @endsection
+    @push('scripts')   
+    <script>
+        function exportReports() {
+            const form = document.querySelector('#export-reports'); // Replace with your filter form ID
+            const formData = new FormData(form);
+            const btn = document.querySelector('#export-btn');
+            btn.disabled = true;
+            btn.textContent = 'Exporting...';
+            fetch("{{ route('admin.reports.export') }}", {
+                method: 'POST',
+                body: formData,
+                headers: {
+                    'X-CSRF-Token': '{{ csrf_token() }}'
+                }
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    // Handle success (e.g., show a message or redirect to download)
+                    alert('Export successful!'); // Replace with actual download logic
+                } else {
+                    alert('Export failed.');
+                }
+            }).finally(() => {
+            btn.disabled = false;
+            btn.textContent = 'Export Reports';
+             })
+            .catch(error => console.error('Error:', error));
+        }
+    </script>
+@endpush

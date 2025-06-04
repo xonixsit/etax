@@ -1,7 +1,7 @@
 <?php
 
 namespace App\Http\Controllers\Admin;
-
+use Maatwebsite\Excel\Facades\Excel; // If using Laravel Excel
 use App\Http\Controllers\Controller;
 use App\Models\Assessment;
 use App\Models\AssessmentResponse;
@@ -10,7 +10,8 @@ use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
-
+use Illuminate\Support\Facades\Response;
+// No need for direct PhpSpreadsheet imports unless customizing
 class ReportsController extends Controller
 {
     public function index(Request $request)
@@ -41,44 +42,68 @@ class ReportsController extends Controller
             ->withQueryString();
 
         // Get all employees and assessments for filters
-         $employees = User::role('employee')->orderBy('name')->get();
+        $employees = User::role('employee')->orderBy('name')->get();
         $assessments = Assessment::orderBy('title')->get();
 
         return view('admin.reports.index', compact('responses', 'employees', 'assessments'));
     }
 
     public function export(Request $request)
-    {
-        $query = AssessmentResponse::with([
-            'assessment',
-            'employee',
-            'questionResponses.question'
-        ])->where('status', 'completed');
+{
+    $query = AssessmentResponse::with([
+        'assessment',
+        'employee',
+        'answers.question' // Load answers and their questions
+    ])->where('status', 'completed');
 
-        // Apply filters
-        if ($request->filled('start_date')) {
-            $query->whereDate('created_at', '>=', $request->start_date);
-        }
-
-        if ($request->filled('end_date')) {
-            $query->whereDate('created_at', '<=', $request->end_date);
-        }
-
-        if ($request->filled('user_id')) {
-            $query->where('user_id', $request->user_id);
-        }
-
-        if ($request->filled('assessment_id')) {
-            $query->where('assessment_id', $request->assessment_id);
-        }
-
-        $responses = $query->orderBy('created_at', 'desc')->get();
-
-        return response()->json([
-            'success' => true,
-            'data' => $responses
-        ]);
+    // Apply filters
+    if ($request->filled('start_date')) {
+        $query->whereDate('completed_at', '>=', $request->start_date); // Use completed_at
     }
+
+    if ($request->filled('end_date')) {
+        $query->whereDate('completed_at', '<=', $request->end_date);
+    }
+
+    if ($request->filled('user_id')) {
+        $query->where('user_id', $request->user_id);
+    }
+
+    if ($request->filled('assessment_id')) {
+        $query->where('assessment_id', $request->assessment_id);
+    }
+
+    $responses = $query->orderBy('completed_at', 'desc')->get();
+
+    // Log details safely
+    Log::info('Exporting reports', [
+        'count' => $responses->count(),
+        'first_item' => $responses->isNotEmpty() ? $responses->first()->only(['id', 'employee_id', 'assessment_id', 'score', 'status']) : null
+    ]);
+
+    $headers = [
+        'Content-Type' => 'text/csv',
+        'Content-Disposition' => 'attachment; filename="assessment_reports.csv"'
+    ];
+
+    $callback = function () use ($responses) {
+        $file = fopen('php://output', 'w');
+        fputcsv($file, ['Employee', 'Assessment', 'Score', 'Completed At']);
+
+        foreach ($responses as $response) {
+            fputcsv($file, [
+                $response->user?->name ?? 'N/A', // Use safe navigation
+                $response->assessment?->title ?? 'N/A',
+                $response->score ?? 'N/A',
+                $response->completed_at?->format('Y-m-d H:i:s') ?? 'N/A'
+            ]);
+        }
+
+        fclose($file);
+    };
+
+    return Response::stream($callback, 200, $headers);
+}
 
     public function show(AssessmentResponse $response)
     {
