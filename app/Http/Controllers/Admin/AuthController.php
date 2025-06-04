@@ -28,11 +28,17 @@ class AuthController extends Controller
     public function login(Request $request)
     {
         $user = User::where('email', $request->email)->first();
-        Log::info('User Role', [
-            'user_id' => $user->id,
-            'user_email' => $user->email,
-            'user_role' => $user->roles->pluck('name')->toArray(),
-        ]);
+        // Log::info('User Role', [
+        //     'user_id' => $user->id,
+        //     'user_email' => $user->email,
+        //     'user_role' => $user->roles->pluck('name')->toArray(),
+        // ]);
+        
+        if(!$user){
+            return back()->withErrors([
+                'email' => 'The provided credentials do not match our records.',
+            ])->onlyInput('email');
+        }
         $credentials = $request->validate([
             'email' => ['required', 'email'],
             'password' => ['required']
@@ -63,33 +69,24 @@ class AuthController extends Controller
             return redirect()->intended(route('admin.dashboard'));
         }
 
-        // Check if user has admin role and redirect to admin dashboard
-        $user = User::where('email', $request->email)->first();
+        // // Check if user has admin role and redirect to admin dashboard
+        // $user = User::where('email', $request->email)->first();
 
-        Log::info('User Role', [
-            'user_id' => $user->id,
-            'user_email' => $user->email,
-            'user_role' => $user->roles->pluck('name')->toArray(),
-            'ip' => $request->ip(),
-            'user_agent' => $request->userAgent(),
-            'timestamp' => now(),
-        ]);
+        // Log::info('User Role', [
+        //     'user_id' => $user->id,
+        //     'user_email' => $user->email,
+        //     'user_role' => $user->roles->pluck('name')->toArray(),
+        //     'ip' => $request->ip(),
+        //     'user_agent' => $request->userAgent(),
+        //     'timestamp' => now(),
+        // ]);
         if ($user && $user->hasRole('admin')) {
             Auth::login($user);
-            return redirect()->route('admin.dashboard');
+
+            return back()->withErrors([
+                'email' => 'The provided credentials do not match our records.',
+            ])->onlyInput('email');
         }
-
-        // Log failed login attempt
-        Log::warning('Failed login attempt', [
-            'email' => $request->email,
-            'ip' => $request->ip(),
-            'user_agent' => $request->userAgent(),
-            'timestamp' => now(),
-        ]);
-
-        return back()->withErrors([
-            'email' => 'The provided credentials do not match our records.',
-        ])->onlyInput('email');
     }
 
     public function register(Request $request)
