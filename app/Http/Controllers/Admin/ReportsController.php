@@ -81,28 +81,32 @@ class ReportsController extends Controller
         'first_item' => $responses->isNotEmpty() ? $responses->first()->only(['id', 'employee_id', 'assessment_id', 'score', 'status']) : null
     ]);
 
-    $headers = [
-        'Content-Type' => 'text/csv',
-        'Content-Disposition' => 'attachment; filename="assessment_reports.csv"'
-    ];
+        $headers = [
+            'Content-Type' => 'application/csv',
+            'Content-Disposition' => 'attachment; filename="assessment_reports.csv"',
+            'Pragma' => 'no-cache',
+            'Cache-Control' => 'must-revalidate, post-check=0, pre-check=0',
+            'Expires' => '0',
+        ];
 
-    $callback = function () use ($responses) {
-        $file = fopen('php://output', 'w');
-        fputcsv($file, ['Employee', 'Assessment', 'Score', 'Completed At']);
+        $callback = function () use ($responses) {
+            $file = fopen('php://output', 'w');
+            fputcsv($file, ['Employee', 'Assessment', 'Score', 'Completed At']);
 
-        foreach ($responses as $response) {
-            fputcsv($file, [
-                $response->user?->name ?? 'N/A', // Use safe navigation
-                $response->assessment?->title ?? 'N/A',
-                $response->score ?? 'N/A',
-                $response->completed_at?->format('Y-m-d H:i:s') ?? 'N/A'
-            ]);
-        }
+            foreach ($responses as $response) {
+                fputcsv($file, [
+                    $response->user?->name ?? 'N/A',
+                    $response->assessment?->title ?? 'N/A',
+                    $response->score ?? 'N/A',
+                    $response->completed_at?->format('Y-m-d H:i:s') ?? 'N/A'
+                ]);
+            }
 
-        fclose($file);
-    };
+            fclose($file);
+        };
 
-    return Response::stream($callback, 200, $headers);
+
+        return Response::stream($callback, 200, $headers);
 }
 
     public function show(AssessmentResponse $response)

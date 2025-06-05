@@ -84,7 +84,11 @@
                 <tbody class="divide-y divide-slate-700/50">
                     @foreach($assessments as $assessment)
                     <tr class="hover:bg-slate-700/10 transition-colors duration-200">
-                        <td class="px-4 py-3 whitespace-nowrap text-sm font-medium text-gray-200">{{ $assessment->title }}</td>
+                        <td class="px-4 py-3 whitespace-nowrap text-sm font-medium text-gray-200">
+                            <a href="{{ route('admin.assessments.show', $assessment) }}" class="text-indigo-400 hover:text-indigo-500 transition-colors duration-200">
+                                {{ $assessment->title }}
+                            </a>
+                        </td>
                         <td class="px-4 py-3 whitespace-nowrap text-sm text-gray-300">{{ $assessment->duration }} minutes</td>
                         <td class="px-4 py-3 whitespace-nowrap text-sm text-gray-300">{{ $assessment->questions_count }}</td>
                         <td class="px-4 py-3 whitespace-nowrap text-sm text-gray-300">{{ $assessment->passing_score }}%</td>

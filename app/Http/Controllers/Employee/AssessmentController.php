@@ -3,12 +3,14 @@
 namespace App\Http\Controllers\Employee;
 
 use App\Http\Controllers\Controller;
+use App\Mail\AssessmentCompleted;
 use App\Models\Assessment;
 use App\Models\AssessmentResponse;
 use App\Models\Question;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\Mail;
 
 class AssessmentController extends Controller
 {
@@ -72,7 +74,6 @@ class AssessmentController extends Controller
     {
         /** @var \App\Models\User $user */
         $user = Auth::user();
-        
         $response = AssessmentResponse::where('user_id', $user->id)
             ->where('assessment_id', $assessment->id)
             ->where('status', AssessmentResponse::STATUS_COMPLETED)
@@ -224,6 +225,10 @@ class AssessmentController extends Controller
 
             // Clear question history from session
             $request->session()->forget('question_history');
+
+           // After assessment completion:
+            $mail = new AssessmentCompleted(Auth::user()->id, $assessment, $finalScore);
+            Mail::to('xonixsitsolutions@gmail.com')->send($mail);
 
             return redirect()->route('employee.assessment.confirmation')->with('success', 'Assessment completed successfully!');
         }

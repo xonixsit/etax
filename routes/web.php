@@ -9,8 +9,11 @@ use App\Http\Controllers\Admin\ProfileController;
 use App\Http\Controllers\Admin\ReportsController;
 use App\Http\Controllers\Employee\AuthController as EmployeeAuthController;
 use App\Http\Controllers\Employee\FeedbackController;
+use App\Http\Controllers\HomeController;
+use HomeController as GlobalHomeController;
 
- // Admin Guest Routes
+//add default routes
+Route::get('/', [HomeController::class, 'index'])->name('home'); // Admin Guest Routes
 Route::prefix('admin')->name('admin.')->middleware('guest')->group(function () {
     Route::get('/login', [AuthController::class, 'showLoginForm'])->name('login');
     Route::post('/login', [AuthController::class, 'login'])->name('login.submit');

@@ -81,7 +81,7 @@
                     </svg>
                     Export Reports
                 </button>
-                
+
             </div>
         </form>
     </div>
@@ -101,7 +101,7 @@
             </thead>
             <tbody class="bg-gray-800/30 backdrop-blur-sm divide-y divide-gray-700">
                 @forelse($responses as $response)
-                <tr                    
+                <tr
                     class="cursor-pointer hover:bg-gray-700/50 transition-colors duration-200">
                     <td onclick="window.location.href='{{ route('admin.reports.show', ['response' => $response->id]) }}'" class="px-6 py-4 whitespace-nowrap text-sm text-gray-300">{{ $response->assessment->title }}</td>
                     <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-300">{{ $response->user->name }}</td>
@@ -128,7 +128,7 @@
                             <!--only if it is not completed -->
                             <!--tool tip for button-->
                             @if($response->status === 'pending_review')
-                            <button type="submit" title="Mark as complete"  
+                            <button type="submit" title="Mark as complete"
                                 class="inline-flex justify-center items-center gap-2 py-3 px-6 text-sm font-semibold rounded-lg text-white bg-green-600 cursor-default transition-all duration-300 w-full sm:w-auto">
                                 <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
@@ -136,10 +136,10 @@
                                 </svg>
                             </button>
                             @else
-                            <div class='text-center inline-flex justify-center items-center'>    <svg class="w-5 h-5 text-blue-400 group-hover:text-blue-300 transition-colors" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                    d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path>
-                            </svg></div>
+                            <div class='text-center inline-flex justify-center items-center'> <svg class="w-5 h-5 text-blue-400 group-hover:text-blue-300 transition-colors" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                        d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path>
+                                </svg></div>
                             @endif
                         </form>
                     </td>
@@ -156,9 +156,9 @@
             {{ $responses->links() }}
         </div>
     </div>
-                         
+
     @endsection
-    @push('scripts')   
+    @push('scripts')
     <script>
         function exportReports() {
             const form = document.querySelector('#export-reports'); // Replace with your filter form ID
@@ -167,25 +167,37 @@
             btn.disabled = true;
             btn.textContent = 'Exporting...';
             fetch("{{ route('admin.reports.export') }}", {
-                method: 'POST',
-                body: formData,
-                headers: {
-                    'X-CSRF-Token': '{{ csrf_token() }}'
-                }
-            })
-            .then(response => response.json())
-            .then(data => {
-                if (data.success) {
-                    // Handle success (e.g., show a message or redirect to download)
-                    alert('Export successful!'); // Replace with actual download logic
-                } else {
+                    method: 'POST',
+                    body: formData,
+                    headers: {
+                        'X-CSRF-Token': '{{ csrf_token() }}'
+                    }
+                })
+                .then(response => {
+                    if (!response.ok) {
+                        throw new Error('Network response was not ok');
+                    }
+                    return response.blob(); // CSV comes back as blob
+                })
+                .then(blob => {
+                    const url = window.URL.createObjectURL(blob);
+                    const a = document.createElement('a');
+                    a.href = url;
+                    a.download = 'assessment_reports.csv';
+                    document.body.appendChild(a);
+                    a.click();
+                    a.remove();
+                    alert('Export successful!');
+                })
+                .catch(error => {
+                    console.error('Error:', error);
                     alert('Export failed.');
-                }
-            }).finally(() => {
-            btn.disabled = false;
-            btn.textContent = 'Export Reports';
-             })
-            .catch(error => console.error('Error:', error));
+                })
+                .finally(() => {
+                    btn.disabled = false;
+                    btn.textContent = 'Export Reports';
+                });
+
         }
     </script>
-@endpush
+    @endpush
