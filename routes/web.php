@@ -30,6 +30,9 @@ Route::prefix('admin')->name('admin.')->middleware('auth')->group(function () {
     Route::resource('employees', EmployeeController::class);
     Route::get('employees/create', [EmployeeController::class, 'create'])->name('employees.create');
 
+    //Route for import
+    Route::post('employees/import', [EmployeeController::class, 'import'])->name('employees.import');
+
     // Profile Management
     Route::resource('profile', ProfileController::class);
     Route::get('/profile/edit', [ProfileController::class, 'edit'])->name('profile.edit');
@@ -56,6 +59,8 @@ Route::prefix('admin')->name('admin.')->middleware('auth')->group(function () {
     Route::resource('feedback', \App\Http\Controllers\Admin\FeedbackController::class);
     Route::get('/feedback', [\App\Http\Controllers\Admin\FeedbackController::class, 'index'])->name('feedback.index');
     Route::get('/feedback/{feedback}', [\App\Http\Controllers\Admin\FeedbackController::class, 'show'])->name('feedback.show');
+
+    
 
     // routes/web.php
     // Route::post('/export-reports', [ReportsController::class, 'export'])->name('admin.export-reports');
