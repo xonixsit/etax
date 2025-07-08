@@ -16,6 +16,8 @@ class ReportsController extends Controller
 {
     public function index(Request $request)
     {
+        $perPage = $request->input('per_page', 10); // Default to 10 items per page
+
         $query = AssessmentResponse::with(['assessment', 'employee'])
     ->whereIn('status', ['pending_review', 'completed', 'in_progress']);
 
@@ -38,7 +40,7 @@ class ReportsController extends Controller
 
         // Get paginated results
         $responses = $query->orderBy('created_at', 'desc')
-            ->paginate(10)
+            ->paginate($perPage)
             ->withQueryString();
 
         // Get all employees and assessments for filters

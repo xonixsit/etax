@@ -65,7 +65,7 @@
             <div class="bg-gray-700/50 rounded-lg p-4">
                 <p class="text-sm font-medium text-gray-400 mb-1">Submitted At</p>
                 <p class="text-2xl font-bold text-gray-300">
-                    {{ $response->completed_at->format('Y-m-d H:i') }}
+                    {{ $response->completed_at ? $response->completed_at->format('Y-m-d H:i') : 'N/A' }}
                 </p>
             </div>
         </div>

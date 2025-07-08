@@ -84,6 +84,7 @@ Route::middleware('auth:employee')->prefix('employee')->name('employee.')->group
     Route::get('/assessments', [\App\Http\Controllers\Employee\AssessmentController::class, 'index'])->name('assessments.index');
     Route::get('/assessments/{assessment}', [\App\Http\Controllers\Employee\AssessmentController::class, 'show'])->name('assessments.show');
     Route::get('/assessments/{assessment}/take', [\App\Http\Controllers\Employee\AssessmentController::class, 'take'])->name('assessments.take');
+Route::get('/assessments/{assessment}/confirmation', [\App\Http\Controllers\Employee\AssessmentController::class, 'confirmation'])->name('employee.assessments.confirmation');
     Route::get('/assessments/{assessment}/question/{response}', [\App\Http\Controllers\Employee\AssessmentController::class, 'question'])->name('assessments.question');
     Route::post('/assessments/{assessment}/question/{response}', [\App\Http\Controllers\Employee\AssessmentController::class, 'submitAnswer'])->name('assessments.submit-answer');
     Route::get('/assessment-confirmation', [\App\Http\Controllers\Employee\AssessmentController::class, 'showConfirmation'])->name('assessment.confirmation');
@@ -96,5 +97,9 @@ Route::middleware('auth:employee')->prefix('employee')->name('employee.')->group
 
     // Route for saving feedback (POST)
     Route::post('/feedback', [FeedbackController::class, 'store'])->name('feedback.store');
+
+    // routes/web.php
+
+    Route::get('/certificate/{assessmentId}', [\App\Http\Controllers\Employee\AssessmentController::class, 'downloadCertificateAsImage'])->name('certificates.certificate');
  
 });
