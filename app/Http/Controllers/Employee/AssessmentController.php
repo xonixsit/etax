@@ -11,6 +11,9 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Mail;
+use Spatie\Browsershot\Browsershot;
+use Spatie\Image\Manipulations;
+use PDF;
 
 class AssessmentController extends Controller
 {
@@ -65,9 +68,25 @@ class AssessmentController extends Controller
         return view('employee.assessments.show', compact('assessment', 'response'));
     }
 
-    public function showConfirmation()
+    public function confirmation(Assessment $assessment, Request $request)
     {
-        return view('employee.assessment-confirmation');
+        /** @var \App\Models\User $user */
+        $user = Auth::user();
+
+        $response = AssessmentResponse::where('user_id', $user->id)
+            ->where('assessment_id', $assessment->id)
+            ->latest()
+            ->first();
+
+        if ($response && $request->has('timed_out') && $request->timed_out == 'true') {
+            $response->update([
+                'status' => AssessmentResponse::STATUS_PENDING_REVIEW,
+                'completed_at' => now(),
+            ]);
+            return view('employee.assessments.confirmation', compact('assessment', 'response'))->with('success', 'Assessment submitted due to timeout and is pending review.');
+        }
+
+        return view('employee.assessments.confirmation', compact('assessment', 'response'));
     }
 
     public function results(Assessment $assessment)
@@ -158,6 +177,23 @@ class AssessmentController extends Controller
             return redirect()->route('employee.assessments.show', $assessment);
         }
 
+        Log::info('submitAnswer method called.');
+        $isTimedOut = (bool) $request->get('timed_out');
+        Log::info('Request has timed_out parameter (via get): ' . ($request->has('timed_out') ? 'true' : 'false'));
+        Log::info('Value of timed_out parameter (via get): ' . $request->get('timed_out'));
+        Log::info('Type of timed_out parameter (via get): ' . gettype($request->get('timed_out')));
+        Log::info('isTimedOut boolean value: ' . ($isTimedOut ? 'true' : 'false'));
+
+        // Check if the submission is due to a timeout
+        if ($isTimedOut) {
+            $response->update([
+                'status' => AssessmentResponse::STATUS_PENDING_REVIEW,
+                'completed_at' => now(),
+            ]);
+            Log::info('Redirecting to confirmation page after timeout.');
+            return redirect()->route('employee.assessments.confirmation', $assessment)->with('success', 'Assessment submitted due to timeout and is pending review.');
+        }
+
         // Initialize question history in session if not exists
         if (!$request->session()->has('question_history')) {
             $request->session()->put('question_history', []);
@@ -233,6 +269,7 @@ class AssessmentController extends Controller
             return redirect()->route('employee.assessment.confirmation')->with('success', 'Assessment completed successfully!');
         }
 
+        Log::info('Assessment duration in question method: ' . $assessment->duration);
         return view('employee.assessments.question', compact('assessment', 'response', 'currentQuestion'));
     }
 
@@ -261,6 +298,20 @@ class AssessmentController extends Controller
 
         if ($response->status !== AssessmentResponse::STATUS_IN_PROGRESS) {
             return redirect()->route('employee.assessments.show', $assessment);
+        }
+
+        Log::info('submitAnswer method called.');
+        Log::info('Request has timeout parameter: ' . ($request->has('timeout') ? 'true' : 'false'));
+        Log::info('Value of timeout parameter: ' . $request->input('timeout'));
+        Log::info('Type of timeout parameter: ' . gettype($request->input('timeout')));
+
+        // Check if the submission is due to a timeout
+        if ($request->has('timeout') && $request->timeout === 'true') {
+            $response->update([
+                'status' => AssessmentResponse::STATUS_PENDING_REVIEW,
+                'completed_at' => now(),
+            ]);
+            return redirect()->route('employee.assessment.confirmation')->with('success', 'Assessment submitted due to timeout and is pending review.');
         }
 
         // Find the question first
@@ -345,4 +396,44 @@ class AssessmentController extends Controller
             'action' => 'next'
         ]);
     }
+
+    /*write function to pass values in certificate for completion assessment selected by <employee></employee>*/
+    public function viewCertificate($assessmentId)
+    {
+        /*get assessment title from assessment id*/
+        $assessment = Assessment::find($assessmentId);
+        if (!$assessment) {
+            abort(404);
+        }
+        return view('certificates.certificate', [
+            'employeeName' => Auth::user()->name,
+            'assessmentTitle' => $assessment->title,
+            'assessmentId' => $assessment->id,
+            'dateIssued' => $assessment->completed_at
+        ]);    
+    }
+
+
+    public function downloadCertificateAsImage($assessmentId)
+    {
+        $assessment = Assessment::findOrFail($assessmentId);
+
+        /*get user name from auth*/
+        $userName = Auth::user()->name;
+
+        $url = route('employee.certificates.certificate', ['assessmentId' => $assessment->id]);
+    
+        $url = route('employee.certificates.certificate', ['assessmentId' => $assessment->id]);
+        $filePath = storage_path('app/public/certificates/HFI_Certificate_' . $userName . '.png');
+    
+        Browsershot::url($url)
+    ->setChromePath('C:\Users\Hp\.cache\puppeteer\chrome\win64-137.0.7151.55\chrome-win64\chrome.exe')
+    ->noSandbox()
+    ->timeout(60) // seconds
+    ->setDelay(1000) // 1 second delay to let the page fully render
+    ->windowSize(1200, 800)
+    ->save($filePath);
+    return response()->download($filePath);
+    }
+    
 }

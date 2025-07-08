@@ -11,9 +11,8 @@
                         <p class="text-gray-300">Question {{ $response->answers->count() + 1 }} of {{ $assessment->questions->count() }}</p>
                         @if($assessment->duration)
                         <div
-                            x-data="timer({{ $assessment->duration * 60 }})"
-                            x-init="init()"
-                            x-show="timeLeft > 0"
+                            x-data="Object.assign({}, timer({{ ($assessment->duration > 0 ? $assessment->duration : 1) * 60 }}, {{ $assessment->id }}))"
+                            x-show="timeLeft > 0 && {{ $assessment->duration > 0 ? 'true' : 'false' }}"
                             class="flex items-center space-x-2 bg-gray-800/50 px-4 py-2 rounded-lg border border-gray-500/30 transition-all duration-300">
                             <svg class="w-5 h-5 text-blue-400" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path>
@@ -49,6 +48,7 @@
                     if (!validateForm()) return;
                     if (isLastQuestion) {
                         if (confirm('Are you sure you want to submit the assessment? This action cannot be undone.')) {
+                            sessionStorage.removeItem('assessmentTimeLeft'); // Clear only on final submission
                             $event.target.submit();
                         }
                     } else {
@@ -57,6 +57,7 @@
                   ">
                         @csrf
                         <input type="hidden" name="question_id" value="{{ $currentQuestion->id }}">
+
 
                         @switch($currentQuestion->type)
                         @case('multiple_choice')
@@ -129,7 +130,7 @@
                         <div class="mt-6 flex align-right items-right">
                             <!--Right align the button -->
                             <button type="submit" name="action" value="next" 
-                                class="px-6 py-3 bg-blue-600 text-white rounded-lg hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 focus:ring-offset-gray-800 font-medium transition-all duration-200 flex items-right">
+                                class="px-6 py-3 bg-blue-600 text-white rounded-lg hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 focus:ring-offset-gray-800 font-medium transition-all duration-200 flex justify-end">
                                 <span>Next Question</span>
                                 <svg class="w-5 h-5 ml-2" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 7l5 5m0 0l-5 5m5-5H6"></path>
@@ -144,44 +145,66 @@
 </div>
 @push('scripts')
 <script>
-    function timer(duration) {
+    function timer(duration, assessmentId) {
         return {
             timeLeft: parseInt(sessionStorage.getItem('assessmentTimeLeft')) || duration,
             timerInterval: null,
             init() {
+                console.log('Timer function init called.');
+                const storedTime = sessionStorage.getItem('assessmentTimeLeft');
+                console.log('Initial timeLeft from sessionStorage (raw):', storedTime);
+
+                // Use stored time if available and valid, otherwise use the full duration
+                if (storedTime && !isNaN(parseInt(storedTime)) && parseInt(storedTime) > 0) {
+                    this.timeLeft = parseInt(storedTime);
+                } else {
+                    this.timeLeft = duration;
+                }
+                console.log('Initial timeLeft value after parsing/defaulting:', this.timeLeft);
+
+                // Start the timer immediately upon initialization
                 this.startTimer();
+
                 this.$watch('timeLeft', value => {
+                    console.log('timeLeft watcher triggered. New value:', value);
                     sessionStorage.setItem('assessmentTimeLeft', value);
+                    console.log('sessionStorage updated with:', value);
+                    console.log('Current sessionStorage content:', sessionStorage.getItem('assessmentTimeLeft'));
                     if (value === 300) { // 5 minutes warning
                         alert('Warning: 5 minutes remaining!');
                     }
                 });
             },
             startTimer() {
+                if (this.timerInterval) {
+                    clearInterval(this.timerInterval);
+                }
+
                 this.timerInterval = setInterval(() => {
+                    this.timeLeft--;
+                    console.log('setInterval fired. Current timeLeft:', this.timeLeft);
                     if (this.timeLeft <= 0) {
                         clearInterval(this.timerInterval);
                         sessionStorage.removeItem('assessmentTimeLeft');
-                        alert('Time is up! Your assessment will be submitted automatically.');
-                        document.querySelector('form').submit();
-                        return;
+                        alert('Time is up! Your assessment will be submitted and you will be redirected to the confirmation page.');
+
+                        const form = document.querySelector('form');
+
+                        const timedOutInput = document.createElement('input');
+                        timedOutInput.type = 'hidden';
+                        timedOutInput.name = 'timed_out';
+                        timedOutInput.value = 'true';
+
+                        form.appendChild(timedOutInput);
+                        window.location.href = `/employee/assessments/${assessmentId}/confirmation?timed_out=true`;
                     }
-                    this.timeLeft--;
                 }, 1000);
             },
             formatTime() {
                 const minutes = Math.floor(this.timeLeft / 60);
                 const seconds = this.timeLeft % 60;
-                return `${minutes}:${seconds.toString().padStart(2, '0')}`;
-            },
-            destroy() {
-                if (this.timerInterval) {
-                    clearInterval(this.timerInterval);
-                    sessionStorage.removeItem('assessmentTimeLeft'); // Clear session storage to reset timer
-                }
+                return `${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
             }
-        };
+        }
     }
 </script>
-@endpush
-@endsection

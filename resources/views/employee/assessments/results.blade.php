@@ -1,6 +1,8 @@
 @extends('layouts.employee')
 
 @section('content')
+
+
 <div class="py-6">
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div class="bg-gray-800/60 backdrop-blur-md rounded-xl shadow-xl border border-gray-700/30 overflow-hidden">
@@ -14,6 +16,11 @@
                         {{ $assessment->title }}
                     </h1>
                     <p class="text-gray-400 text-lg">Review your assessment performance and detailed feedback</p>
+                    <a href="{{ route('employee.certificates.certificate', ['assessmentId' => $assessment->id]) }}"
+   class="inline-flex items-center px-6 py-3 bg-gray-600 text-white rounded-xl hover:bg-gray-500 transition-all duration-200 group">
+   View Certificate
+</a>
+
                 </div>
 
                 <!-- Score Summary -->

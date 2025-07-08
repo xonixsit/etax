@@ -103,7 +103,11 @@
                 @forelse($responses as $response)
                 <tr
                     class="cursor-pointer hover:bg-gray-700/50 transition-colors duration-200">
-                    <td onclick="window.location.href='{{ route('admin.reports.show', ['response' => $response->id]) }}'" class="px-6 py-4 whitespace-nowrap text-sm text-gray-300">{{ $response->assessment->title }}</td>
+                    <td onclick="window.location.href='{{ route('admin.reports.show', ['response' => $response->id]) }}'" class="px-6 py-4 whitespace-nowrap text-sm text-gray-300">
+                        <a href="{{ route('admin.assessments.show', $response->assessment->id) }}" class="text-blue-600 hover:text-blue-800 font-medium hover:underline">
+                            {{ $response->assessment->title }}
+                        </a>
+                    </td>
                     <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-300">{{ $response->user->name }}</td>
                     <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-300">{{ $response->score }}%</td>
                     <td class="px-6 py-4 whitespace-nowrap text-sm">
@@ -152,7 +156,24 @@
             </tbody>
         </table>
 
-        <div class="px-6 py-5 bg-gray-800/50 backdrop-blur-sm border-t border-gray-700">
+        <div class="px-6 py-5 bg-gray-800/50 backdrop-blur-sm border-t border-gray-700 flex justify-between items-center">
+            <div class="flex items-center">
+                <label for="per_page" class="text-sm font-semibold text-gray-200 mr-2">Show</label>
+                <select name="per_page" id="per_page"
+                    onchange="
+                        const urlParams = new URLSearchParams(window.location.search);
+                        urlParams.set('per_page', this.value);
+                        window.location.search = urlParams.toString();
+                    "
+                    class="block rounded-lg border-2 border-gray-600 bg-gray-700 text-gray-200 shadow-sm focus:border-indigo-500 focus:ring-2 focus:ring-indigo-500/50 hover:border-indigo-400 transition-all duration-200 cursor-pointer px-4 py-2.5">
+                    @foreach([10, 50, 100, 200] as $perPageOption)
+                        <option value="{{ $perPageOption }}" {{ request('per_page', 10) == $perPageOption ? 'selected' : '' }}>
+                            {{ $perPageOption }}
+                        </option>
+                    @endforeach
+                </select>
+                <span class="text-sm font-semibold text-gray-200 ml-2">entries</span>
+            </div>
             {{ $responses->links() }}
         </div>
     </div>

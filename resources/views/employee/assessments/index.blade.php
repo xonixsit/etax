@@ -112,8 +112,9 @@
                         @else
                         @if(!$assessment->getIsExpiredAttribute())
                         <!-- Start Assessment -->
-                        <a title="Start Assessment" href="{{ route('employee.assessments.show', $assessment) }}" class="text-blue-400 hover:text-blue-300 transition-colors group">
-                            <svg class="w-8 h-8" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg" aria-hidden="true" focusable="false">
+                        <a title="Start Assessment" href="{{ route('employee.assessments.show', $assessment) }}" class="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md shadow-sm text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 transition duration-150 ease-in-out">
+                            Start
+                            <svg class="ml-2 -mr-0.5 h-4 w-4" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg" aria-hidden="true" focusable="false">
                                 <path d="M6.5 5.5v9l7-4.5-7-4.5z" />
                             </svg>
                         </a>
