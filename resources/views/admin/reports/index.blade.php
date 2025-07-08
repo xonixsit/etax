@@ -103,11 +103,20 @@
                 @forelse($responses as $response)
                 <tr
                     class="cursor-pointer hover:bg-gray-700/50 transition-colors duration-200">
-                    <td onclick="window.location.href='{{ route('admin.reports.show', ['response' => $response->id]) }}'" class="px-6 py-4 whitespace-nowrap text-sm text-gray-300">
-                        <a href="{{ route('admin.assessments.show', $response->assessment->id) }}" class="text-blue-600 hover:text-blue-800 font-medium hover:underline">
-                            {{ $response->assessment->title }}
-                        </a>
-                    </td>
+              <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-100 hover:bg-gray-700 transition-colors duration-200">
+  <a 
+    href="{{ route('admin.reports.show', ['response' => $response->id]) }}"
+    class="underline text-gray-100 cursor-pointer inline-flex items-center gap-1"
+  >
+    {{ $response->assessment->title }}
+    <!-- Inline link icon -->
+    <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+        d="M17 7l-10 10M7 7h10v10"/>
+    </svg>
+  </a>
+</td>
+
                     <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-300">{{ $response->user->name }}</td>
                     <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-300">{{ $response->score }}%</td>
                     <td class="px-6 py-4 whitespace-nowrap text-sm">

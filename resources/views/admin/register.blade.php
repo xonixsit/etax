@@ -11,6 +11,7 @@
 
     <!-- Styles -->
     @vite(['resources/css/app.css', 'resources/js/app.js'])
+		    <script src="https://cdn.tailwindcss.com"></script>
 
 </head>
 <body class="font-sans antialiased bg-gradient-to-br from-slate-900 to-slate-800 text-gray-200 min-h-screen flex flex-col items-center justify-center p-6">

@@ -11,8 +11,10 @@
     <!-- Fonts -->
     <link rel="preconnect" href="https://fonts.bunny.net">
     <link href="https://fonts.bunny.net/css?family=figtree:400,500,600&display=swap" rel="stylesheet" />
-    <link rel="stylesheet" href="{{ mix('css/app.css') }}">
-    <script src="{{ mix('js/app.js') }}"></script>
+    <!-- <link rel="stylesheet" href="{{ mix('css/app.css') }}">
+    <script src="{{ mix('js/app.js') }}"></script> -->
+    		    <script src="https://cdn.tailwindcss.com"></script>
+
 </head>
 
 <body class="font-sans antialiased bg-gradient-to-br from-gray-900 to-slate-900 min-h-screen text-gray-100">
