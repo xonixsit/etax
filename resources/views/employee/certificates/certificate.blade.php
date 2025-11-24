@@ -1,8 +1,3 @@
-@php
-    dump($assessment);
-@endphp
-
-
 @extends('layouts.employee')
 
 @section('title', 'Assessment Completed')
@@ -36,6 +31,15 @@
                 <p class="mt-2 text-gray-600">In recognition of successfully completing the</p>
                 <p class="font-medium text-lg text-gray-800">{{ $assessmentTitle ?? 'Human-Centered Design Assessment' }}</p>
             </div>
+
+            <!-- Score -->
+            @if(isset($score))
+            <div class="text-center">
+                <div class="inline-block bg-green-100 text-green-800 px-4 py-2 rounded-lg">
+                    <span class="font-semibold">Final Score: {{ $score }}%</span>
+                </div>
+            </div>
+            @endif
 
             <!-- Description -->
             <div class="text-center max-w-2xl mx-auto">

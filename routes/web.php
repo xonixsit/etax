@@ -100,6 +100,7 @@ Route::get('/assessments/{assessment}/confirmation', [\App\Http\Controllers\Empl
 
     // routes/web.php
 
-    Route::get('/certificate/{assessmentId}', [\App\Http\Controllers\Employee\AssessmentController::class, 'downloadCertificateAsImage'])->name('certificates.certificate');
+    Route::get('/certificate/{assessmentId}', [\App\Http\Controllers\Employee\AssessmentController::class, 'viewCertificate'])->name('certificates.certificate');
+    Route::get('/certificate/{assessmentId}/download', [\App\Http\Controllers\Employee\AssessmentController::class, 'downloadCertificateAsImage'])->name('certificates.download');
  
 });

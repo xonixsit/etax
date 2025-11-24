@@ -423,43 +423,79 @@ class AssessmentController extends Controller
         ]);
     }
 
-    /*write function to pass values in certificate for completion assessment selected by <employee></employee>*/
+    /*write function to pass values in certificate for completion assessment selected by employee*/
     public function viewCertificate($assessmentId)
     {
+        /** @var \App\Models\User $user */
+        $user = Auth::user();
+        
         /*get assessment title from assessment id*/
-        $assessment = Assessment::find($assessmentId);
-        if (!$assessment) {
-            abort(404);
+        $assessment = Assessment::findOrFail($assessmentId);
+        
+        // Check if user has completed this assessment
+        $response = AssessmentResponse::where('user_id', $user->id)
+            ->where('assessment_id', $assessment->id)
+            ->where('status', AssessmentResponse::STATUS_COMPLETED)
+            ->first();
+            
+        if (!$response) {
+            return redirect()->route('employee.assessments.index')
+                ->with('error', 'You must complete this assessment before viewing the certificate.');
         }
-        return view('certificates.certificate', [
-            'employeeName' => Auth::user()->name,
+        
+        return view('employee.certificates.certificate', [
+            'employeeName' => $user->name,
             'assessmentTitle' => $assessment->title,
             'assessmentId' => $assessment->id,
-            'dateIssued' => $assessment->completed_at
+            'dateIssued' => $response->completed_at,
+            'score' => $response->score
         ]);    
     }
 
 
     public function downloadCertificateAsImage($assessmentId)
     {
+        /** @var \App\Models\User $user */
+        $user = Auth::user();
+        
         $assessment = Assessment::findOrFail($assessmentId);
+        
+        // Check if user has completed this assessment
+        $response = AssessmentResponse::where('user_id', $user->id)
+            ->where('assessment_id', $assessment->id)
+            ->where('status', AssessmentResponse::STATUS_COMPLETED)
+            ->first();
+            
+        if (!$response) {
+            return redirect()->route('employee.assessments.index')
+                ->with('error', 'You must complete this assessment before downloading the certificate.');
+        }
 
         /*get user name from auth*/
-        $userName = Auth::user()->name;
+        $userName = $user->name;
 
         $url = route('employee.certificates.certificate', ['assessmentId' => $assessment->id]);
-    
-        $url = route('employee.certificates.certificate', ['assessmentId' => $assessment->id]);
         $filePath = storage_path('app/public/certificates/HFI_Certificate_' . $userName . '.png');
+        
+        // Ensure the certificates directory exists
+        $certificatesDir = storage_path('app/public/certificates');
+        if (!file_exists($certificatesDir)) {
+            mkdir($certificatesDir, 0755, true);
+        }
     
-        Browsershot::url($url)
-    ->setChromePath('C:\Users\Hp\.cache\puppeteer\chrome\win64-137.0.7151.55\chrome-win64\chrome.exe')
-    ->noSandbox()
-    ->timeout(60) // seconds
-    ->setDelay(1000) // 1 second delay to let the page fully render
-    ->windowSize(1200, 800)
-    ->save($filePath);
-    return response()->download($filePath);
+        try {
+            Browsershot::url($url)
+                ->noSandbox()
+                ->timeout(60) // seconds
+                ->setDelay(1000) // 1 second delay to let the page fully render
+                ->windowSize(1200, 800)
+                ->save($filePath);
+                
+            return response()->download($filePath);
+        } catch (\Exception $e) {
+            Log::error('Certificate generation failed: ' . $e->getMessage());
+            return redirect()->back()->with('error', 'Failed to generate certificate. Please try again.');
+        }
     }
     
 }
