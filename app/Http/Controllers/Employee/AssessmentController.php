@@ -357,10 +357,24 @@ class AssessmentController extends Controller
             }
             // For multiple choice
             else {
-                $correctAnswers = array_map('trim', explode(',', $question->correct_answer));
+                // Convert correct_answer to string for consistent handling
+                $correctAnswerStr = (string) $question->correct_answer;
+                
+                // Handle both single index and comma-separated indices
+                if (strpos($correctAnswerStr, ',') !== false) {
+                    // Multiple correct answers (comma-separated indices)
+                    $correctAnswers = array_map('trim', explode(',', $correctAnswerStr));
+                } else {
+                    // Single correct answer (single index)
+                    $correctAnswers = [$correctAnswerStr];
+                }
+                
                 $correctOptions = array_map(function($index) use ($question) {
-                    return $question->options[$index] ?? null;
+                    return $question->options[(int)$index] ?? null;
                 }, $correctAnswers);
+                
+                // Remove any null values
+                $correctOptions = array_filter($correctOptions);
                 
                 // Check if arrays have the same values regardless of order
                 sort($userAnswer);
@@ -374,8 +388,11 @@ class AssessmentController extends Controller
             Log::info('Answer details', [
                 'question_id' => $question->id,
                 'question_type' => $question->type,
+                'raw_request_answer' => $request->answer,
                 'user_answer' => $userAnswer,
                 'correct_answer' => $question->correct_answer,
+                'correct_answer_str' => $correctAnswerStr ?? null,
+                'correct_answers_array' => $correctAnswers ?? null,
                 'correct_options' => $question->type === 'multiple_choice' ? $correctOptions : $correctAnswerValue,
                 'is_correct' => $isCorrect,
                 'options' => $question->options
@@ -383,9 +400,18 @@ class AssessmentController extends Controller
         }
 
         // Store the answer
+        $storedAnswer = $question->type === 'multiple_choice' ? json_encode($request->answer) : $request->answer;
+        
+        Log::info('Storing answer', [
+            'question_id' => $question->id,
+            'stored_answer' => $storedAnswer,
+            'is_correct' => $isCorrect,
+            'score' => $score
+        ]);
+        
         $response->answers()->create([
             'question_id' => $question->id,
-            'answer' => $question->type === 'multiple_choice' ? json_encode($request->answer) : $request->answer,
+            'answer' => $storedAnswer,
             'is_correct' => $isCorrect,
             'score' => $score
         ]);

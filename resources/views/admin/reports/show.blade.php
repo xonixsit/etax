@@ -91,31 +91,51 @@
                                 <div class="space-y-2 pl-4">
                                     @php
                                         $userAnswers = json_decode($answer->answer, true) ?? [];
-                                        $correctIndices = array_map('intval', explode(',', $answer->question->correct_answer));
+                                        // Handle both single index and comma-separated indices
+                                        $correctAnswerStr = (string) $answer->question->correct_answer;
+                                        if (strpos($correctAnswerStr, ',') !== false) {
+                                            $correctIndices = array_map('intval', explode(',', $correctAnswerStr));
+                                        } else {
+                                            $correctIndices = [(int) $correctAnswerStr];
+                                        }
                                     @endphp
                                     @foreach($answer->question->options as $index => $option)
-                                        <div class="flex items-center gap-3 p-2 rounded-lg {{ in_array($option, $userAnswers) ? 'bg-gray-600/50' : 'bg-gray-700/30' }}">
-                                            <span class="w-6 h-6 flex items-center justify-center rounded-full border {{ in_array($index, $correctIndices) ? 'border-green-500 text-green-500' : 'border-gray-500 text-gray-500' }}">{{ chr(65 + $index) }}</span>
-                                            <span class="{{ in_array($index, $correctIndices) ? 'text-green-400' : 'text-gray-400' }}">{{ $option }}</span>
-                                            @if(in_array($option, $userAnswers))
-                                                <!-- <span class="ml-auto text-sm {{ $answer->is_correct ? 'text-green-400' : 'text-red-400' }}">
-                                                    Selected
-                                                </span> -->
-                                            @endif
+                                        <div class="flex items-center gap-3 p-2 rounded-lg bg-gray-700/30">
+                                            <span class="w-6 h-6 flex items-center justify-center rounded-full border border-gray-500 text-gray-500">{{ chr(65 + $index) }}</span>
+                                            <span class="text-gray-400 flex-1">{{ $option }}</span>
+                                            <div class="flex items-center gap-2">
+                                                @if(in_array($option, $userAnswers))
+                                                    <span class="px-2 py-1 rounded text-xs font-medium bg-blue-500/20 text-blue-400 border border-blue-500/50">
+                                                        User Selected
+                                                    </span>
+                                                @endif
+                                                @if(in_array($index, $correctIndices))
+                                                    <span class="px-2 py-1 rounded text-xs font-medium bg-green-500/20 text-green-400 border border-green-500/50">
+                                                        Correct Answer
+                                                    </span>
+                                                @endif
+                                            </div>
                                         </div>
                                     @endforeach
                                 </div>
                             @elseif($answer->question->type === 'single_selection')
                                 <div class="space-y-2 pl-4">
                                     @foreach($answer->question->options as $index => $option)
-                                        <div class="flex items-center gap-3 p-2 rounded-lg {{ $option == $answer->answer ? 'bg-gray-600/50' : 'bg-gray-700/30' }}">
-                                            <span class="w-6 h-6 flex items-center justify-center rounded-full border {{ $index == $answer->question->correct_answer ? 'border-green-500 text-green-500' : 'border-gray-500 text-gray-500' }}">{{ chr(65 + $index) }}</span>
-                                            <span class="{{ $index == $answer->question->correct_answer ? 'text-green-400' : 'text-gray-400' }}">{{ $option }}</span>
-                                            @if($option == $answer->answer)
-                                                <span class="ml-auto text-sm {{ $answer->is_correct ? 'text-green-400' : 'text-red-400' }}">
-                                                    Selected
-                                                </span>
-                                            @endif
+                                        <div class="flex items-center gap-3 p-2 rounded-lg bg-gray-700/30">
+                                            <span class="w-6 h-6 flex items-center justify-center rounded-full border border-gray-500 text-gray-500">{{ chr(65 + $index) }}</span>
+                                            <span class="text-gray-400 flex-1">{{ $option }}</span>
+                                            <div class="flex items-center gap-2">
+                                                @if($option == $answer->answer)
+                                                    <span class="px-2 py-1 rounded text-xs font-medium bg-blue-500/20 text-blue-400 border border-blue-500/50">
+                                                        User Selected
+                                                    </span>
+                                                @endif
+                                                @if($index == $answer->question->correct_answer)
+                                                    <span class="px-2 py-1 rounded text-xs font-medium bg-green-500/20 text-green-400 border border-green-500/50">
+                                                        Correct Answer
+                                                    </span>
+                                                @endif
+                                            </div>
                                         </div>
                                     @endforeach
                                 </div>
@@ -151,12 +171,13 @@
                             @if($answer->is_correct === true) bg-green-500/20 text-green-500
                             @elseif($answer->is_correct === false) bg-red-500/20 text-red-500
                             @else bg-yellow-500/20 text-yellow-500 @endif">
+                            <!-- {{ $answer->is_correct ? 'true' : 'false' }} {{$answer}} -->
                             @if($answer->is_correct === true)
                                 <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/>
                                 </svg>
                             @elseif($answer->is_correct === false)
-                                <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                               {{$answer->is_correct}} <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/>
                                 </svg>
                             @else
