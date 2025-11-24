@@ -443,12 +443,19 @@ class AssessmentController extends Controller
                 ->with('error', 'You must complete this assessment before viewing the certificate.');
         }
         
+        // Check if user passed the assessment
+        if ($response->score < $assessment->passing_score) {
+            return redirect()->route('employee.assessments.results', $assessment)
+                ->with('error', 'Certificate is only available for passed assessments. You scored ' . $response->score . '% but need ' . $assessment->passing_score . '% to pass.');
+        }
+        
         return view('employee.certificates.certificate', [
             'employeeName' => $user->name,
             'assessmentTitle' => $assessment->title,
             'assessmentId' => $assessment->id,
             'dateIssued' => $response->completed_at,
-            'score' => $response->score
+            'score' => $response->score,
+            'assessment' => $assessment
         ]);    
     }
 
@@ -469,6 +476,12 @@ class AssessmentController extends Controller
         if (!$response) {
             return redirect()->route('employee.assessments.index')
                 ->with('error', 'You must complete this assessment before downloading the certificate.');
+        }
+        
+        // Check if user passed the assessment
+        if ($response->score < $assessment->passing_score) {
+            return redirect()->route('employee.assessments.results', $assessment)
+                ->with('error', 'Certificate is only available for passed assessments. You scored ' . $response->score . '% but need ' . $assessment->passing_score . '% to pass.');
         }
 
         /*get user name from auth*/
