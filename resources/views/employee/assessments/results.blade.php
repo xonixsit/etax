@@ -95,7 +95,13 @@
                                 <!-- Your Answer -->
                                 <div class="bg-gray-800/50 rounded-lg p-4 border border-gray-600/30">
                                     <h4 class="text-sm font-medium text-gray-400 mb-2">Your Answer:</h4>
-                                    <p class="text-gray-200">{{ $answer->answer }}</p>
+                                    <p class="text-gray-200">{{$answer->answer}}
+                                        @if($answer->question->type === 'multiple_choice')
+                                            {{ implode(', ', json_decode($answer->answer, true) ?? []) }}
+                                        @else
+                                            {{ $answer->answer }}
+                                        @endif
+                                    </p>
                                 </div>
 
                                 <!-- Feedback Section -->
@@ -117,7 +123,16 @@
                                             </div>
                                             <div class="bg-gray-800/50 rounded-lg p-4 border border-gray-600/30 mt-2">
                                                 <h4 class="text-sm font-medium text-gray-400 mb-2">Correct Answer:</h4>
-                                                <p class="text-green-400">{{ $answer->question->correct_answer }}</p>
+                                                <p class="text-green-400">
+                                                    @if($answer->question->type === 'multiple_choice')
+                                                        @php $correctIndices = array_map('intval', explode(',', $answer->question->correct_answer)); @endphp
+                                                        {{ implode(', ', array_map(function($index) use ($answer) { return $answer->question->options[$index] ?? 'N/A'; }, $correctIndices)) }}
+                                                    @elseif($answer->question->type === 'single_selection')
+                                                        {{ $answer->question->options[$answer->question->correct_answer] ?? 'N/A' }}
+                                                    @else
+                                                        N/A
+                                                    @endif
+                                                </p>
                                             </div>
                                         </div>
                                     @endif
